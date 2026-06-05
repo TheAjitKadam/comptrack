@@ -1,4 +1,5 @@
 import { supabase } from '../../../lib/supabase'
+import EmailCapture from '../../../components/EmailCapture'
 
 const cityLabels = {
   'bangalore': 'Bangalore', 'mumbai': 'Mumbai', 'delhi': 'Delhi',
@@ -181,6 +182,16 @@ export default async function SalaryPage({ params }) {
             </div>
           </div>
         )}
+
+        <div className="bg-gray-50 rounded-xl p-6 mb-10">
+          <h3 className="text-lg font-semibold text-gray-900 mb-1">
+            Get alerted when {role} salaries change
+          </h3>
+          <p className="text-sm text-gray-500 mb-4">
+            We'll notify you when new data comes in for {role} in {city}. No spam, unsubscribe anytime.
+          </p>
+          <EmailCapture role={role} city={city} />
+        </div>
 
         <div>
           <h2 className="text-xl font-semibold text-gray-900 mb-3">
