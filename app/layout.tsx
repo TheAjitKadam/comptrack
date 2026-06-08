@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "CompTrack - Know your market worth",
   description: "Real salary data from verified professionals across India. See where you stand in seconds.",
   verification: {
-    google: "NT3kCBVGEqrc6OhTJ8PPkqE0laEV9z1z_IqPqNcpxgk"
+    google: "4O1ZPUBdWA1m3cXyajJmdviIb92DSi44HF5yDi7UZf4"
   }
 };
 
