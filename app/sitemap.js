@@ -9,8 +9,8 @@ export default function sitemap() {
     'bangalore', 'mumbai', 'delhi', 'pune', 'hyderabad',
     'chennai', 'kolkata', 'ahmedabad', 'noida', 'gurgaon'
   ]
-
-  const baseUrl = 'https://comptrack-orpin.vercel.app'
+  
+  const baseUrl = 'https://comptrack.in'
 
   const salaryPages = []
   for (const role of roles) {
