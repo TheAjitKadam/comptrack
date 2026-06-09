@@ -1,6 +1,8 @@
 import { supabase } from '../../../lib/supabase'
 import EmailCapture from '../../../components/EmailCapture'
 
+export const revalidate = 3600
+
 const cityLabels = {
   'bangalore': 'Bangalore', 'mumbai': 'Mumbai', 'delhi': 'Delhi',
   'pune': 'Pune', 'hyderabad': 'Hyderabad', 'chennai': 'Chennai',
@@ -64,6 +66,12 @@ export default async function SalaryPage({ params }) {
     .limit(1)
     .single()
 
+  const { data: allSubmissions } = await supabase
+    .from('salary_submissions')
+    .select('base_salary')
+    .eq('role_normalized', roleSlug)
+    .eq('city', citySlug)
+
   const { data: submissions } = await supabase
     .from('salary_submissions')
     .select('base_salary, total_comp, experience_years, company_name')
@@ -74,8 +82,11 @@ export default async function SalaryPage({ params }) {
 
   let p25 = null, p50 = null, p75 = null, sampleSize = 0
 
-  if (submissions && submissions.length >= 3) {
-    const salaries = submissions.map(function(s) { return s.base_salary }).sort(function(a, b) { return a - b })
+  if (allSubmissions && allSubmissions.length >= 3) {
+    const salaries = allSubmissions
+      .map(function(s) { return s.base_salary })
+      .filter(function(s) { return s > 0 })
+      .sort(function(a, b) { return a - b })
     sampleSize = salaries.length
     p25 = salaries[Math.floor(sampleSize * 0.25)]
     p50 = salaries[Math.floor(sampleSize * 0.5)]
@@ -89,8 +100,32 @@ export default async function SalaryPage({ params }) {
     sampleSize = benchmark.sample_size
   }
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Dataset',
+    name: role + ' Salary in ' + city + ' 2025',
+    description: 'Real ' + role + ' salary data in ' + city + '. Based on ' + (sampleSize > 0 ? sampleSize : 'community') + ' verified submissions.',
+    url: 'https://comptrack.in/salary/' + slug,
+    keywords: role + ' salary, ' + city + ' salary, ' + role + ' salary in ' + city + ', India salary benchmarks',
+    creator: {
+      '@type': 'Organization',
+      name: 'CompTrack',
+      url: 'https://comptrack.in'
+    },
+    variableMeasured: [
+      { '@type': 'PropertyValue', name: '25th Percentile Salary', value: p25, unitText: 'INR' },
+      { '@type': 'PropertyValue', name: 'Median Salary', value: p50, unitText: 'INR' },
+      { '@type': 'PropertyValue', name: '75th Percentile Salary', value: p75, unitText: 'INR' }
+    ]
+  }
+
   return (
     <main className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <header className="border-b border-gray-100 px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <a href="/" className="text-xl font-semibold text-gray-900">CompTrack</a>
@@ -188,7 +223,7 @@ export default async function SalaryPage({ params }) {
             Get alerted when {role} salaries change
           </h3>
           <p className="text-sm text-gray-500 mb-4">
-            We'll notify you when new data comes in for {role} in {city}. No spam, unsubscribe anytime.
+            We will notify you when new data comes in for {role} in {city}. No spam, unsubscribe anytime.
           </p>
           <EmailCapture role={role} city={city} />
         </div>

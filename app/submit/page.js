@@ -34,7 +34,8 @@ export default function SubmitPage() {
     experience_years: '',
     base_salary: '',
     bonus: '',
-    total_comp: ''
+    total_comp: '',
+    website: ''
   })
   const [submitted, setSubmitted] = useState(false)
   const [loading, setLoading] = useState(false)
@@ -47,6 +48,11 @@ export default function SubmitPage() {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+
+    if (form.website) {
+      setSubmitted(true)
+      return
+    }
 
     if (!form.role_title || !form.city || !form.base_salary) {
       setError('Please fill in role, city, and base salary at minimum.')
@@ -123,6 +129,18 @@ export default function SubmitPage() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
+
+          <div style={{ display: 'none' }}>
+            <input
+              type="text"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              tabIndex={-1}
+              autoComplete="off"
+            />
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Job Role *
