@@ -1,6 +1,7 @@
 import { supabase } from '../../../lib/supabase'
 import EmailCapture from '../../../components/EmailCapture'
 import ExperienceFilter from '../../../components/ExperienceFilter'
+import CompanyBreakdown from '../../../components/CompanyBreakdown'
 
 export const revalidate = 3600
 
@@ -69,7 +70,7 @@ export default async function SalaryPage({ params }) {
 
   const { data: allSubmissions } = await supabase
     .from('salary_submissions')
-    .select('base_salary')
+    .select('base_salary, company_name')
     .eq('role_normalized', roleSlug)
     .eq('city', citySlug)
 
@@ -209,6 +210,8 @@ export default async function SalaryPage({ params }) {
             </div>
           </div>
         )}
+
+        <CompanyBreakdown submissions={allSubmissions} role={role} city={city} />
 
         <div className="bg-gray-50 rounded-xl p-6 mb-10">
           <h3 className="text-lg font-semibold text-gray-900 mb-1">
