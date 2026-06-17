@@ -2,6 +2,7 @@ import { supabase } from '../../../lib/supabase'
 import EmailCapture from '../../../components/EmailCapture'
 import ExperienceFilter from '../../../components/ExperienceFilter'
 import CompanyBreakdown from '../../../components/CompanyBreakdown'
+import ShareCard from '../../../components/ShareCard'
 
 export const revalidate = 3600
 
@@ -212,6 +213,14 @@ export default async function SalaryPage({ params }) {
         )}
 
         <CompanyBreakdown submissions={allSubmissions} role={role} city={city} />
+
+        {allSubmissions && allSubmissions.length >= 3 && (
+          <ShareCard
+            role={role}
+            city={city}
+            allSalaries={allSubmissions.map(function(s) { return s.base_salary })}
+          />
+        )}
 
         <div className="bg-gray-50 rounded-xl p-6 mb-10">
           <h3 className="text-lg font-semibold text-gray-900 mb-1">

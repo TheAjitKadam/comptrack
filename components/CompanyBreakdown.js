@@ -21,13 +21,19 @@ export default function CompanyBreakdown({ submissions, role, city }) {
     companyMap[key].count += 1
   })
 
-  const companies = Object.keys(companyMap).map(function(name) {
-    return {
-      name: name,
-      avgSalary: companyMap[name].total / companyMap[name].count,
-      count: companyMap[name].count
-    }
-  })
+  const MIN_SUBMISSIONS_PER_COMPANY = 2
+
+  const companies = Object.keys(companyMap)
+    .map(function(name) {
+      return {
+        name: name,
+        avgSalary: companyMap[name].total / companyMap[name].count,
+        count: companyMap[name].count
+      }
+    })
+    .filter(function(c) {
+      return c.count >= MIN_SUBMISSIONS_PER_COMPANY
+    })
 
   companies.sort(function(a, b) {
     return b.avgSalary - a.avgSalary
@@ -35,7 +41,8 @@ export default function CompanyBreakdown({ submissions, role, city }) {
 
   const topCompanies = companies.slice(0, 10)
 
-  if (topCompanies.length === 0) {
+  const MIN_COMPANIES_TO_SHOW_TABLE = 3
+  if (topCompanies.length < MIN_COMPANIES_TO_SHOW_TABLE) {
     return null
   }
 
