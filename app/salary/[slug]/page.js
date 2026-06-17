@@ -1,5 +1,6 @@
 import { supabase } from '../../../lib/supabase'
 import EmailCapture from '../../../components/EmailCapture'
+import ExperienceFilter from '../../../components/ExperienceFilter'
 
 export const revalidate = 3600
 
@@ -149,23 +150,14 @@ export default async function SalaryPage({ params }) {
         </div>
 
         {p50 ? (
-          <div className="grid grid-cols-3 gap-4 mb-10">
-            <div className="bg-gray-50 rounded-xl p-5 text-center">
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">25th Percentile</p>
-              <p className="text-2xl font-bold text-gray-700">{formatSalary(p25)}</p>
-              <p className="text-xs text-gray-400 mt-1">per year</p>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-5 text-center border border-blue-100">
-              <p className="text-xs text-blue-600 uppercase tracking-wide mb-2">Median (P50)</p>
-              <p className="text-2xl font-bold text-blue-700">{formatSalary(p50)}</p>
-              <p className="text-xs text-blue-400 mt-1">per year</p>
-            </div>
-            <div className="bg-gray-50 rounded-xl p-5 text-center">
-              <p className="text-xs text-gray-500 uppercase tracking-wide mb-2">75th Percentile</p>
-              <p className="text-2xl font-bold text-gray-700">{formatSalary(p75)}</p>
-              <p className="text-xs text-gray-400 mt-1">per year</p>
-            </div>
-          </div>
+          <ExperienceFilter
+            roleSlug={roleSlug}
+            citySlug={citySlug}
+            initialP25={p25}
+            initialP50={p50}
+            initialP75={p75}
+            initialSampleSize={sampleSize}
+          />
         ) : (
           <div className="bg-amber-50 border border-amber-100 rounded-xl p-6 mb-10 text-center">
             <p className="text-amber-800 font-medium mb-2">No data yet for this role and city</p>
